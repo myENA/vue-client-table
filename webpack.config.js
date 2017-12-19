@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 const extractLESS = new ExtractTextPlugin('[name].css');
+const pkg = require('./package.json');
 
 module.exports = {
   entry: './src/index.js',
@@ -43,7 +44,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
-    library: 'ena_caf_libname',
+    library: pkg.name,
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
