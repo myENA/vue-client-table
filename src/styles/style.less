@@ -1,0 +1,9 @@
+.define-vars-if-not-defined() {
+  @font-size-base: 14px;
+  @var: @font-size-h1: floor((@font-size-base * 2.6));
+}
+.define-vars-if-not-defined(); // exposes variables only if not already in this scope
+
+.libname-class{
+  font-style: @font-size-h1;
+}

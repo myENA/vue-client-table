@@ -1,0 +1,5 @@
+/* Settings for libname */
+APPSettings = APPSettings || {};
+Object.assign(APPSettings, {
+  keyName: '{{keyOrDefault "apps/ui/keyName" "default"}}'
+});
