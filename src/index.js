@@ -1,7 +1,7 @@
-import Tpl from './templates/tpl.jst';
+// import Tpl from './templates/tpl.jst';
 
-let SomeObject = {
-  tpl: Tpl
-};
+function SomeObject(){
+  this.name = 'SomeObject';
+}
 
 export default SomeObject;
