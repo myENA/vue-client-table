@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Description for ENA CAF Library",
   "repository": "ssh://git@bitbucket.ena.net:7999/ecl/vue-client-table.git",
-  "main": "dist/index.js",
+  "main": "dist/vue-client-table.js",
   "scripts": {
     "build": "npm run test && webpack",
     "test": "nyc --require babel-register mocha --colors ./test/**/*.spec.js"
