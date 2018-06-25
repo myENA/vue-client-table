@@ -207,38 +207,139 @@ th.sortable {
 </style>
 
 <script type="text/javascript">
+/**
+ * @module ClientTable
+ */
 export default {
   props: {
+    /**
+     * List of objects to present in the table
+     *
+     * @member
+     * @type {Array}
+     */
     data: Array,
+    /**
+     * List of keys to use from each object (table columns)
+     *
+     * @type {Array}
+     */
     columns: Array,
+    /**
+     * The search query string. If updated will filter the results by the value
+     * @type {String}
+     */
     searchQuery: String,
+    /**
+     * Options for the table
+     *
+     * @inner
+     * @type {Object}
+     */
     options: {
       type: Object,
       default() {
         return {};
       },
     },
+    /**
+     * Default option values. Will be overwritten by the "options" value
+     *
+     * @type {Object<Object>}
+     */
     defaults: {
       type: Object,
       default() {
         return {
-          // key-value pairs with the headings to overwrite (label to display)
-          // can also be overwritten with slot: "heading_colname"
+          /**
+           * Key-value pairs with the headings to overwrite (label to display)
+           * can also be overwritten with slot: "heading_colname"
+           *
+           * @inner
+           * @type {Object}
+           */
           headings: {},
-          // key-value pairs with templates (components) for the column value
+          /**
+           * Key-value pairs with templates (components) for the column value
+           *
+           * @type {Object}
+           */
           templates: {},
-          // key-value pairs with custom search function per column
+          /**
+           * Key-value pairs with custom search function per column
+           *
+           * @type {Object}
+           */
           search: {},
+          /**
+           * Field to group by - key name
+           *
+           * @default
+           * @type {Boolean|String}
+           */
           groupBy: false,
+          /**
+           * Expand/collapse groups
+           *
+           * @default
+           * @type {Boolean}
+           */
           toggleGroups: false,
+          /**
+           * Object of data to use for each group "header" (key is the group value)
+           *
+           * @type {Object}
+           */
           groupMeta: {},
+          /**
+           * Required, unique identifier
+           *
+           * @default
+           * @type {String}
+           */
           uniqueKey: 'id',
+          /**
+           * show extra row for each row with details
+           *
+           * @default
+           * @type {Boolean}
+           */
           childRow: false,
+          /**
+           * empty object to disable sorting for all, or define what columns are sortable; defaults to all sortable
+           *
+           * @default
+           * @type {false|Object}
+           */
           sortable: false,
+          /**
+           * false, to disable pagination - show all; defaults to true
+           *
+           * @default
+           * @type {Boolean}
+           */
           pagination: true,
-          perPage: 1,
-          pageInterval: 5,
-          perPageValues: [1, 2, 5, 10, 20],
+          /**
+           * number of items per page
+           *
+           * @default
+           * @type {Number}
+           */
+          perPage: 10,
+          /**
+           * How many pages to show in the paginator. Odd number
+           *
+           * @default
+           * @type {Number}
+           */
+          pageInterval: 9,
+          /**
+           * values to show in the selector of items per page
+           *
+           * @default
+           * @type {Array}
+           */
+          perPageValues: [1, 2, 5, 10, 20, 50],
         };
       },
     },

@@ -1,0 +1,38 @@
+{
+  "tags"      : {
+    "allowUnknownTags" : true
+  },
+  "plugins"   : [
+    "plugins/markdown",
+    "plugins/summarize",
+    "node_modules/jsdoc-vue"
+  ],
+  "source"    : {
+    "exclude": ["node_modules", "dist", "doc", "config", ".json", "webpack"],
+    "includePattern": "\\.(vue|js)$"
+  },
+  "templates" : {
+    "cleverLinks"           : true,
+    "dateFormat"            : "MM/DD/YYYY hh:mm:ss A",
+    "outputSourceFiles"     : true,
+    "outputSourcePath"      : true,
+    "systemName"            : "ENA CAF Vue Client Table",
+    "footer"                : "",
+    "copyright"             : "2018 © Education Networks of America.",
+    "navType"               : "vertical",
+    "theme"                 : "spacelab",
+    "linenums"              : true,
+    "collapseSymbols"       : false,
+    "inverseNav"            : true
+  },
+  "markdown"  : {
+    "parser"   : "gfm",
+    "hardwrap" : true
+  },
+  "opts"      : {
+    "recurse"     : true,
+    "lenient"     : true,
+    "destination" : "doc/",
+    "template"    : "node_modules/ink-docstrap/template"
+  }
+}

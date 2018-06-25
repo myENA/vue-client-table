@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>ENA CAF Vue Client Table Source: client-table.vue</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.spacelab.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">ENA CAF Vue Client Table</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="module-ClientTable.html">ClientTable</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: client-table.vue</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">&lt;template>
+  &lt;div>
+    &lt;slot name="filter">
+      &lt;div>
+        &lt;div class="row">
+          &lt;div class="col-md-2">
+            &lt;slot name="filters">
+              &lt;div class="form-group">
+                &lt;label>Search&lt;/label>
+                &lt;div class="input-group">
+                  &lt;input type="text" class="form-control" placeholder="Search by keyword" v-on:input="search($event.target.value)" />
+                  &lt;span class="input-group-addon">&lt;i class="fa fa-search">&lt;/i>&lt;/span>
+                &lt;/div>
+              &lt;/div>
+            &lt;/slot>
+          &lt;/div>
+          &lt;div class="col-md-10">
+            &lt;div class="pull-right">
+              &lt;div class="form-group">
+                &lt;label>&amp;nbsp;&lt;/label>
+                &lt;div>
+                  &lt;slot name="buttons">&lt;/slot>
+                &lt;/div>
+              &lt;/div>
+            &lt;/div>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/slot>
+    &lt;div class="table-responsive">
+      &lt;table class="table">
+        &lt;thead>
+          &lt;tr>
+            &lt;th v-for="key in columns" :key="key" @click="sortBy(key)"
+              :class="{ sortable: opts.sortable[key], sorted: sortKey === key }">
+              &lt;slot :name="'heading_' + key">
+                {{ key | heading(opts.headings) }}
+              &lt;/slot>
+              &lt;i v-if="opts.sortable[key]" class="fa"
+                :class="{
+                  'fa-sort': sortKey !== key,
+                  'fa-sort-asc': sortKey === key &amp;&amp; sortOrders[key] > 0,
+                  'fa-sort-desc': sortKey === key &amp;&amp; sortOrders[key] &lt; 0,
+                }">
+              &lt;/i>
+            &lt;/th>
+            &lt;th v-if="opts.toggleGroups">&lt;/th>
+          &lt;/tr>
+        &lt;/thead>
+        &lt;tbody v-for="(group, groupKey) in pageData" :key="groupKey">
+          &lt;tr v-if="groupKey !== 'all'">
+            &lt;th :colspan="columns.length + (opts.childRow ? 1 : 0)">
+              &lt;a href="#" @click.prevent="toggleGroup(groupKey)">
+                &lt;i class="fa" :class="{
+                  'fa-chevron-down': isShown(groupKey),
+                  'fa-chevron-right': !isShown(groupKey),
+                }">&lt;/i>
+              &lt;/a>
+              &lt;slot name="__group_meta" v-bind:data="opts.groupMeta[groupKey]">
+                {{groupKey}}
+              &lt;/slot>
+            &lt;/th>
+          &lt;/tr>
+          &lt;template v-for="(entry, index) in group">
+            &lt;tr
+              v-if="isShown(groupKey)"
+              :key="'row_'+entry[opts.uniqueKey]"
+              :data-id="entry[opts.uniqueKey]"
+              >
+              &lt;td v-for="key in columns" :key="'cell_'+key">
+                &lt;slot :name="'column_' + key" v-bind:row="entry">
+                  &lt;component v-if="opts.templates[key]" v-bind:is="opts.templates[key]" :data="entry" :column="key" :index="index">&lt;/component>
+                  &lt;template v-else>{{entry[key]}}&lt;/template>
+                &lt;/slot>
+              &lt;/td>
+              &lt;td v-if="opts.childRow">
+                &lt;a href="#" @click.prevent="toggleRow(entry[opts.uniqueKey])">{{isRowExpanded(entry[opts.uniqueKey]) ? 'Hide details' : 'Show details'}}&lt;/a>
+              &lt;/td>
+            &lt;/tr>
+            &lt;tr
+              v-show="opts.childRow &amp;&amp; isShown(groupKey) &amp;&amp; isRowExpanded(entry[opts.uniqueKey])"
+              :key="'child_row_'+entry[opts.uniqueKey]"
+              :data-child="entry[opts.uniqueKey]"
+              >
+              &lt;td :colspan="columns.length + (opts.childRow ? 1 : 0)">
+                &lt;slot name="child_row" v-bind:row="entry">
+                &lt;/slot>
+              &lt;/td>
+            &lt;/tr>
+          &lt;/template>
+        &lt;/tbody>
+      &lt;/table>
+    &lt;/div>
+    &lt;div class="row" v-if="opts.pagination">
+      &lt;div class="col-md-6">
+        &lt;nav aria-label="Page navigation">
+          &lt;ul class="pagination">
+            &lt;li :class="{ disabled: currentPage === 1}">
+              &lt;a href="#" aria-label="Firs" @click.prevent="goToPage(1)">
+                &lt;span aria-hidden="true">&lt;i class="fa fa-angle-double-left">&lt;/i>&lt;/span>
+              &lt;/a>
+            &lt;/li>
+            &lt;li :class="{ disabled: currentPage === 1}">
+              &lt;a href="#" aria-label="Previous" @click.prevent="goToPage(currentPage-1)">
+                &lt;span aria-hidden="true">&lt;i class="fa fa-angle-left">&lt;/i>&lt;/span>
+              &lt;/a>
+            &lt;/li>
+            &lt;li v-for="page in pagesToShow"
+              :key="page"
+              :class="{ active: page === currentPage }">
+              &lt;a href="#" @click.prevent="goToPage(page)">{{page}}&lt;/a>
+            &lt;/li>
+            &lt;li :class="{ disabled: currentPage === totalPages }">
+              &lt;a href="#" aria-label="Next" @click.prevent="goToPage(currentPage+1)">
+                &lt;span aria-hidden="true">&lt;i class="fa fa-angle-right">&lt;/i>&lt;/span>
+              &lt;/a>
+            &lt;/li>
+            &lt;li :class="{ disabled: currentPage === totalPages }">
+              &lt;a href="#" aria-label="Last" @click.prevent="goToPage(totalPages)">
+                &lt;span aria-hidden="true">&lt;i class="fa fa-angle-double-right">&lt;/i>&lt;/span>
+              &lt;/a>
+            &lt;/li>
+          &lt;/ul>
+        &lt;/nav>
+      &lt;/div>
+      &lt;div class="col-md-6">
+        &lt;div class="form-inline recordsInfo">
+          &lt;div class="form-group">
+            &lt;p class="form-control-static">
+              Showing {{startRow+1}} to {{endRow}} of {{totalRows}} rows
+            &lt;/p>
+          &lt;/div>
+          &lt;div class="form-group">
+            &lt;select v-model="perPage" class="perPageSelector form-control">
+              &lt;option
+                v-for="perPageValue in opts.perPageValues"
+                :value="perPageValue"
+                :key="perPageValue"
+                >
+                {{perPageValue}}
+              &lt;/option>
+            &lt;/select>
+          &lt;/div>
+          &lt;div class="form-group">
+            &lt;p class="form-control-static">
+              records per page
+            &lt;/p>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  &lt;/div>
+&lt;/template>
+
+&lt;style lang="less">
+.table {
+  border-bottom: 1px solid #ddd;
+  > thead:first-child > tr:first-child > th {
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+  }
+  tbody > tr:first-child > th {
+    background-color: #F2F2F2;
+    a + span {
+      margin-left: 5px;
+    }
+    a {
+      color: #333;
+      font-size: 16px;
+      display: inline-block;
+      width: 20px;
+      text-align: center;
+    }
+  }
+  .checkbox {
+    margin: 0;
+    label {
+      min-height: 18px;
+    }
+  }
+  .sort-handle {
+    color: #333;
+    font-size: 12px;
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+    cursor: move;
+  }
+}
+th.sortable {
+  cursor: pointer;
+  i {
+    margin-top: 5px;
+    margin-left: 5px;
+  }
+}
+.pagination {
+  margin: 0;
+}
+.recordsInfo{
+  .perPageSelector{
+    margin-left: 20px;
+    margin-right: 10px;
+  }
+  float: right;
+}
+&lt;/style>
+
+&lt;script type="text/javascript">
+/**
+ * @module ClientTable
+ */
+export default {
+  props: {
+    /**
+     * List of objects to present in the table
+     *
+     * @member
+     * @type {Array}
+     */
+    data: Array,
+    /**
+     * List of keys to use from each object (table columns)
+     *
+     * @type {Array}
+     */
+    columns: Array,
+    /**
+     * The search query string. If updated will filter the results by the value
+     * @type {String}
+     */
+    searchQuery: String,
+    /**
+     * Options for the table
+     *
+     * @inner
+     * @type {Object}
+     */
+    options: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+    /**
+     * Default option values. Will be overwritten by the "options" value
+     *
+     * @type {Object&lt;Object>}
+     */
+    defaults: {
+      type: Object,
+      default() {
+        return {
+          /**
+           * Key-value pairs with the headings to overwrite (label to display)
+           * can also be overwritten with slot: "heading_colname"
+           *
+           * @inner
+           * @type {Object}
+           */
+          headings: {},
+          /**
+           * Key-value pairs with templates (components) for the column value
+           *
+           * @type {Object}
+           */
+          templates: {},
+          /**
+           * Key-value pairs with custom search function per column
+           *
+           * @type {Object}
+           */
+          search: {},
+          /**
+           * Field to group by - key name
+           *
+           * @default
+           * @type {Boolean|String}
+           */
+          groupBy: false,
+          /**
+           * Expand/collapse groups
+           *
+           * @default
+           * @type {Boolean}
+           */
+          toggleGroups: false,
+          /**
+           * Object of data to use for each group "header" (key is the group value)
+           *
+           * @type {Object}
+           */
+          groupMeta: {},
+          /**
+           * Required, unique identifier
+           *
+           * @default
+           * @type {String}
+           */
+          uniqueKey: 'id',
+          /**
+           * show extra row for each row with details
+           *
+           * @default
+           * @type {Boolean}
+           */
+          childRow: false,
+          /**
+           * empty object to disable sorting for all, or define what columns are sortable; defaults to all sortable
+           *
+           * @default
+           * @type {false|Object}
+           */
+          sortable: false,
+          /**
+           * false, to disable pagination - show all; defaults to true
+           *
+           * @default
+           * @type {Boolean}
+           */
+          pagination: true,
+          /**
+           * number of items per page
+           *
+           * @default
+           * @type {Number}
+           */
+          perPage: 10,
+          /**
+           * How many pages to show in the paginator. Odd number
+           *
+           * @default
+           * @type {Number}
+           */
+          pageInterval: 9,
+          /**
+           * values to show in the selector of items per page
+           *
+           * @default
+           * @type {Array}
+           */
+          perPageValues: [1, 2, 5, 10, 20, 50],
+        };
+      },
+    },
+  },
+  data() {
+    const sortOrders = {};
+    this.columns.forEach((key) => {
+      sortOrders[key] = 1;
+    });
+    return {
+      sortOrders,
+      sortKey: '',
+      searchBy: '',
+      shown: {},
+      expandedRows: {},
+      currentPage: 1,
+      perPage: this.options.perPage || this.defaults.perPage,
+    };
+  },
+  computed: {
+    opts() {
+      const opts = Object.assign(
+        {},
+        this.defaults,
+        this.options
+      );
+      const sortable = {};
+      this.columns.forEach((key) => {
+        if (opts.sortable === false || opts.sortable[key]) {
+          sortable[key] = true;
+        }
+      });
+      return Object.assign(
+        opts,
+        {
+          sortable,
+        }
+      );
+    },
+    pagesToShow() {
+      const halfInterval = (this.opts.pageInterval - 1) / 2;
+      let startPage = Math.max(1, this.currentPage - halfInterval);
+      let endPage = Math.min(this.totalPages, this.currentPage + halfInterval);
+      if (this.totalPages &lt;= this.opts.pageInterval) {
+        startPage = 1;
+        endPage = this.totalPages;
+      } else {
+        while (endPage - startPage &lt; this.opts.pageInterval - 1) {
+          // stabilize the interval
+          endPage = Math.min(this.totalPages, startPage + this.opts.pageInterval - 1);
+          startPage = Math.max(1, endPage - this.opts.pageInterval + 1);
+        }
+      }
+      const pages = [];
+      for (let i = startPage; i &lt;= endPage; i += 1) {
+        pages.push(i);
+      }
+      return pages;
+    },
+    totalPages() {
+      return Math.ceil(this.filteredData.length / this.perPage);
+    },
+    startRow() {
+      return (this.currentPage - 1) * this.perPage;
+    },
+    endRow() {
+      return Math.min(this.startRow + this.perPage, this.totalRows);
+    },
+    totalRows() {
+      return this.filteredData.length;
+    },
+    filteredData() {
+      let { data } = this;
+      const searchQuery = this.searchBy &amp;&amp; this.searchBy.toLowerCase();
+      if (searchQuery) {
+        data = data.filter(
+          row => Object.keys(row).some(
+            (key) => {
+              if (this.opts.search[key]) {
+                return this.opts.search[key](row, key, searchQuery);
+              }
+              return String(row[key]).toLowerCase().indexOf(searchQuery) > -1;
+            }
+          )
+        );
+      }
+      return data;
+    },
+    pageData() {
+      const { sortKey } = this;
+      let data = this.filteredData;
+      const order = this.sortOrders[sortKey] || 1;
+      if (sortKey) {
+        data = data.slice().sort((a, b) => {
+          const aF = a[sortKey];
+          const bF = b[sortKey];
+          return (aF === bF ? 0 : aF > bF ? 1 : -1) * order;
+        });
+      }
+      if (this.opts.pagination) {
+        // slice the data if pagionation is enabled
+        data = data.slice(this.startRow, this.endRow);
+      }
+      if (this.opts.groupBy) {
+        return data.reduce((accumulator, row) => {
+          (accumulator[row[this.opts.groupBy]] = accumulator[row[this.opts.groupBy]] || [])
+            .push(row);
+          return accumulator;
+        }, {});
+      }
+      return { all: data };
+    },
+  },
+  filters: {
+    heading(key, headings) {
+      if (undefined !== headings[key]) {
+        return headings[key];
+      }
+      return key.charAt(0).toUpperCase() + key.slice(1);
+    },
+  },
+  methods: {
+    search(value) {
+      this.searchBy = value;
+    },
+    sortBy(key) {
+      if (this.opts.sortable[key]) {
+        this.sortKey = key;
+        this.sortOrders[key] = this.sortOrders[key] * -1;
+      }
+    },
+    isShown(key) {
+      return typeof this.shown[key] === 'undefined' || this.shown[key];
+    },
+    toggleGroup(key) {
+      this.shown[key] = typeof this.shown[key] === 'undefined' ? false : !this.shown[key];
+      this.shown = Object.assign({}, this.shown);
+    },
+    toggleRow(id) {
+      this.expandedRows[id] = !this.expandedRows[id];
+      this.expandedRows = Object.assign({}, this.expandedRows);
+    },
+    isRowExpanded(id) {
+      return this.expandedRows[id];
+    },
+    goToPage(page) {
+      if (page >= 1 &amp;&amp; page &lt;= this.totalPages) {
+        this.currentPage = page;
+      }
+    },
+  },
+  watch: {
+    searchQuery(query) {
+      this.searchBy = query;
+    },
+    searchBy() {
+      // go to first page when search query changes
+      this.currentPage = 1;
+    },
+  },
+};
+&lt;/script>
+</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	2018 © Education Networks of America.
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+	
+		on 06/25/2018 04:45:01 PM
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+<script>
+	$( function () {
+		$( '#main' ).localScroll( {
+			offset : { top : 60 } //offset by the height of your header (give or take a few px, see what works for you)
+		} );
+		$( "dt.name" ).each( function () {
+			var $this = $( this ).find("h4");
+			var icon = $( "<i/>" ).addClass( "icon-plus-sign" ).addClass( "pull-right" ).addClass( "icon-white" );
+			var dt = $(this);
+			var children = dt.next( "dd" );
+
+			dt.prepend( icon ).css( {cursor : "pointer"} );
+			dt.addClass( "member-collapsed" ).addClass( "member" );
+
+
+			children.hide();
+
+			dt.children().on( "click", function () {
+				children = dt.next( "dd" );
+				children.slideToggle( "fast", function () {
+
+					if ( children.is( ":visible" ) ) {
+						icon.addClass( "icon-minus-sign" ).removeClass( "icon-plus-sign" ).removeClass( "icon-white" );
+						dt.addClass( "member-open" ).animate( "member-collapsed" );
+					} else {
+						icon.addClass( "icon-plus-sign" ).removeClass( "icon-minus-sign" ).addClass( "icon-white" );
+						dt.addClass( "member-collapsed" ).removeClass( "member-open" );
+					}
+				} );
+			} );
+
+		} );
+	} );
+</script>
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

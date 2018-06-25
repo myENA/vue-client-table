@@ -35,22 +35,31 @@ const MyView = new Vue({
 	    },
 	},
     options: {
-        // key-value pairs with the headings to overwrite (label to display)
-		// can also be overwritten with slot: "heading_colname"
+		// key-value pairs with the headings to overwrite (label to display)
 		headings: {},
 		// key-value pairs with templates (components) for the column value
 		templates: {},
 		// key-value pairs with custom search function per column
 		search: {},
+		// field to group by
 		groupBy: false,
+		// expand/collapse groups
 		toggleGroups: false,
+		// object of data to use for each group "header" (key is the group value)
 		groupMeta: {},
+		// required, unique identifier
 		uniqueKey: 'id',
+		// show extra row for each row with details
 		childRow: false,
-        sortable: {}, // empty object to disable sorting for all, or define what columns are sortable; defaults to all sortable
-        pagination: false, // false, to disable pagination - show all; defaults to true
-		perPage: 10, // number of items per page
-		pageInterval: 9, // how many pages to show in the paginator. Odd number
+		// empty object to disable sorting for all, or define what columns are sortable; defaults to all sortable
+        sortable: {},
+        // false, to disable pagination - show all; defaults to true
+        pagination: false,
+        // number of items per page
+		perPage: 10,
+		// how many pages to show in the paginator. Odd number
+		pageInterval: 9,
+		// values to show in the selector of items per page
 		perPageValues: [1, 2, 5, 10, 20, 50],
     },
 });
@@ -77,23 +86,6 @@ const MyView = new Vue({
 	    },
 	},
     options: {
-        // key-value pairs with the headings to overwrite (label to display)
-		// can also be overwritten with slot: "heading_colname"
-		headings: {},
-		// key-value pairs with templates (components) for the column value
-		templates: {},
-		// key-value pairs with custom search function per column
-		search: {},
-		groupBy: false,
-		toggleGroups: false,
-		groupMeta: {},
-		uniqueKey: 'id',
-		childRow: false,
-        sortable: {}, // empty object to disable sorting for all, or define what columns are sortable; defaults to all sortable
-        pagination: false, // false, to disable pagination - show all; defaults to true
-		perPage: 10, // number of items per page
-		pageInterval: 9, // how many pages to show in the paginator. Odd number
-		perPageValues: [1, 2, 5, 10, 20, 50],
     },
 });
 ```
