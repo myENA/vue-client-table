@@ -1,6 +1,6 @@
 {
   "name": "ena-caf-vue-client-table",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Description for ENA CAF Library",
   "repository": "ssh://git@bitbucket.ena.net:7999/ecl/vue-client-table.git",
   "main": "dist/vue-client-table.js",
@@ -42,6 +42,5 @@
     "webpack-cli": "^3.0.8",
     "webpack-merge": "^4.1.3"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
