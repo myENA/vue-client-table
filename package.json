@@ -9,8 +9,8 @@
     "test": "nyc --require babel-register mocha --colors ./test/**/*.spec.js"
   },
   "files": [
-    "dist",
-    "config",
+    "dist/",
+    "config/",
     "**/*.less"
   ],
   "keywords": [],
