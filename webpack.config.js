@@ -1,15 +1,22 @@
 const path = require('path');
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
-const extractLESS = new ExtractTextPlugin('[name].css');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const pkg = require('./package.json');
+const merge = require('webpack-merge');
 
-module.exports = {
-  entry: './src/index.js',
-  devtool: 'source-map',
+var config = {
+  mode: 'production',
+  output: {
+    path: path.resolve(__dirname + '/dist/'),
+  },
   module: {
     rules: [{
+      test: /\.vue$/,
+      use: 'vue-loader'
+    },{
       test: /\.js$/,
       use: 'babel-loader',
       exclude: /(node_modules)/,
@@ -38,19 +45,48 @@ module.exports = {
       }
     }, {
       test: /\.less$/,
-      use: extractLESS.extract([ 'css-loader', 'less-loader' ])
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
     }]
   },
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
-    library: pkg.name,
-    libraryTarget: 'umd',
-    umdNamedDefine: true
-  },
   externals: [],
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true // set to true if you want JS source maps
+      }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessorOptions: {
+          safe: true // without this it changes z-index-es
+        }
+      })
+    ]
+  },
   plugins: [
-    new UglifyJsPlugin({ minimize: true }),
-    extractLESS
+    new VueLoaderPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+    }),
   ]
 };
+
+module.exports = [
+  merge(config, {
+    entry: path.resolve(__dirname + '/src/index.js'),
+    output: {
+      filename: 'vue-client-table.min.js',
+      libraryTarget: 'window',
+      library: 'VueClientTable',
+    }
+  }),
+  merge(config, {
+    entry: path.resolve(__dirname + '/src/client-table.vue'),
+    output: {
+      filename: 'vue-client-table.js',
+      libraryTarget: 'umd',
+      library: 'vue-client-table',
+      umdNamedDefine: true
+    }
+  })
+];

@@ -1,7 +1,7 @@
-// import Tpl from './templates/tpl.jst';
+import ClientTable from './client-table.vue';
 
-function SomeObject(){
-  this.name = 'SomeObject';
-}
-
-export default SomeObject;
+module.exports = {
+  install: function (Vue, options) {
+    Vue.component('client-table', ClientTable);
+  }
+};

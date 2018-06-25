@@ -1,28 +1,51 @@
-# ENA Common Application Framework (CAF) Template for creating a new library
+# Vue Client Table
 
-This is a skeleton to get started with creating a new library to use in ENA CAF
+Vue component for rendering a client side table with pagination, grouping, sorting, filtering, details row
 
 ## Getting Started
 
-* Fork this repo giving it a meaningful name.
-* Checkout the new repo
-* Edit the package json and change the `name` and `description` and `repository` to match the new library name. 
-    - Commit
+`npm i ssh://git@bitbucket.ena.net:7999/ecl/vue-client-table.git`
 
-## Developing
+Use as plugin
 
-Write your code in the `src` folder, organizing as it fits best.
+```html
+<client-table :columns="columns" :options="options" :data="data"></client-table>
+```
 
-When installing dependencies (eg: underscore, backbone), add them also in the `externals` key in `webpack.config.js`. This is to ensure that dependencies are not bundled in the dist file. They should be instead bundled in the dist of the project that includes this lib
+```javascript
+import ClientTable from 'ena-caf-vue-client-table';
+Vue.use(ClientTable);
 
-A settings file is provided in `config`, which is a template meant to be parsed by `consul-template` for an output `js`. This will be bundled in a single `ctmpl` file.
-
-## Distributing
-
-* Build the code `npm run build`
-* Create a new tag
-* Commit and push your changes, including the tags `git push origin --tags`
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning.
+// in the view that contains the table
+const MyView = new Vue({
+	data() {
+    	return {
+    		columns: ['column1', 'column2'],
+    	};
+    },
+    computed: {
+	    data() {
+	      return this.$store.state.myListData; // or any other source that has all data
+	    },
+	},
+    options: {
+        // key-value pairs with the headings to overwrite (label to display)
+		// can also be overwritten with slot: "heading_colname"
+		headings: {},
+		// key-value pairs with templates (components) for the column value
+		templates: {},
+		// key-value pairs with custom search function per column
+		search: {},
+		groupBy: false,
+		toggleGroups: false,
+		groupMeta: {},
+		uniqueKey: 'id',
+		childRow: false,
+        sortable: {}, // empty object to disable sorting for all, or define what columns are sortable; defaults to all sortable
+        pagination: false, // false, to disable pagination - show all; defaults to true
+		perPage: 10, // number of items per page
+		pageInterval: 9, // how many pages to show in the paginator. Odd number
+		perPageValues: [1, 2, 5, 10, 20, 50],
+    },
+});
+```
