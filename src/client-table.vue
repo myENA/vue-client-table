@@ -44,7 +44,11 @@
                 }">
               </i>
             </th>
-            <th v-if="opts.toggleGroups"></th>
+            <th v-if="opts.childRow">
+              <slot :name="'heading_actions">
+                Actions
+              </slot>
+            </th>
           </tr>
         </thead>
         <tbody v-for="(group, groupKey) in pageData" :key="groupKey">
