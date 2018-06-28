@@ -45,7 +45,7 @@
               </i>
             </th>
             <th v-if="opts.childRow">
-              <slot :name="'heading_actions">
+              <slot name="heading_actions">
                 Actions
               </slot>
             </th>
