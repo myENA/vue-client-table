@@ -34,7 +34,20 @@
             <th v-for="key in columns" :key="key" @click="sortBy(key)"
               :class="{ sortable: opts.sortable[key], sorted: sortKey === key }">
               <slot :name="'heading_' + key">
-                {{ key | heading(opts.headings) }}
+                <template v-if="key === 'select'">
+                  <div class="checkbox">
+                    <label>
+                      <input class="check-all"
+                        type="checkbox"
+                        @change="selectAll"
+                        :checked="allSelected" :disabled="!opts.editable"
+                        />
+                    </label>
+                  </div>
+                </template>
+                <template v-else>
+                  {{ key | heading(opts.headings) }}
+                </template>
               </slot>
               <i v-if="opts.sortable[key]" class="fa"
                 :class="{
@@ -74,6 +87,15 @@
               <td v-for="key in columns" :key="'cell_'+key">
                 <slot :name="'column_' + key" v-bind:row="entry">
                   <component v-if="opts.templates[key]" v-bind:is="opts.templates[key]" :data="entry" :column="key" :index="index"></component>
+                  <template v-else-if="key === 'select'">
+                    <div v-if="entry.showSelect" class="checkbox">
+                      <label>
+                        <input type="checkbox" name="selectedRows"
+                          v-model="selectedRows" :disabled="!opts.editable"
+                          :key="'select-'+entry[opts.uniqueKey]" :value="entry[opts.uniqueKey]">
+                      </label>
+                    </div>
+                  </template>
                   <template v-else>{{entry[key]}}</template>
                 </slot>
               </td>
@@ -344,6 +366,11 @@ export default {
            * @type {Array}
            */
           perPageValues: [1, 2, 5, 10, 20, 50],
+          /**
+           * Is the table editable (eg: can select value)
+           * @type {Boolean}
+           */
+          editable: false,
         };
       },
     },
@@ -354,6 +381,8 @@ export default {
       sortOrders[key] = 1;
     });
     return {
+      allSelected: false,
+      selectedRows: [],
       sortOrders,
       sortKey: '',
       searchBy: '',
@@ -494,6 +523,21 @@ export default {
         this.currentPage = page;
       }
     },
+    selectAll() {
+      if (this.allSelected) {
+        this.selectedRows = [];
+      } else {
+        this.selectedRows = this.filteredData.reduce((acc, d) => {
+          if (d.showSelect) {
+            acc.push(d[this.opts.uniqueKey]);
+          }
+          return acc;
+        }, []);
+      }
+    },
+    setAllSelected() {
+      this.allSelected = this.selectedRows.length === this.filteredData.filter(d => d.showSelect).length;
+    },
   },
   watch: {
     searchQuery(query) {
@@ -502,6 +546,31 @@ export default {
     searchBy() {
       // go to first page when search query changes
       this.currentPage = 1;
+    },
+    filteredData() {
+      this.selectedRows = this.filteredData.reduce((acc, d) => {
+        if (d.showSelect && d.selected) {
+          acc.push(d[this.opts.uniqueKey]);
+        }
+        return acc;
+      }, []);
+    },
+    selectedRows() {
+      this.setAllSelected();
+      const selected = this.selectedRows.reduce((acc, id) => {
+        acc[id] = true;
+        return acc;
+      }, {});
+      const selectedData = [];
+      this.filteredData.forEach((row) => {
+        if (row.showSelect) {
+          row.selected = selected[row[this.opts.uniqueKey]] || false;
+          if (row.selected) {
+            selectedData.push(row);
+          }
+        }
+      });
+      this.$emit('selectedRows', selectedData);
     },
   },
 };
