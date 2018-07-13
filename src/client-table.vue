@@ -136,12 +136,12 @@
               :class="{ active: page === currentPage }">
               <a href="#" @click.prevent="goToPage(page)">{{page}}</a>
             </li>
-            <li :class="{ disabled: currentPage === totalPages }">
+            <li :class="{ disabled: currentPage === totalPages || totalPages === 0 }">
               <a href="#" aria-label="Next" @click.prevent="goToPage(currentPage+1)">
                 <span aria-hidden="true"><i class="fa fa-angle-right"></i></span>
               </a>
             </li>
-            <li :class="{ disabled: currentPage === totalPages }">
+            <li :class="{ disabled: currentPage === totalPages || totalPages === 0 }">
               <a href="#" aria-label="Last" @click.prevent="goToPage(totalPages)">
                 <span aria-hidden="true"><i class="fa fa-angle-double-right"></i></span>
               </a>
@@ -151,25 +151,32 @@
       </div>
       <div class="col-md-6">
         <div class="form-inline recordsInfo">
-          <div class="form-group">
-            <p class="form-control-static">
-              Showing {{startRow+1}} to {{endRow}} of {{totalRows}} rows
-            </p>
+          <div v-if="totalRows">
+            <div class="form-group">
+              <p class="form-control-static">
+                Showing {{startRow+1}} to {{endRow}} of {{totalRows}} rows
+              </p>
+            </div>
+            <div class="form-group">
+              <select v-model="perPage" class="perPageSelector form-control">
+                <option
+                  v-for="perPageValue in opts.perPageValues"
+                  :value="perPageValue"
+                  :key="perPageValue"
+                  >
+                  {{perPageValue}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group">
+              <p class="form-control-static">
+                records per page
+              </p>
+            </div>
           </div>
-          <div class="form-group">
-            <select v-model="perPage" class="perPageSelector form-control">
-              <option
-                v-for="perPageValue in opts.perPageValues"
-                :value="perPageValue"
-                :key="perPageValue"
-                >
-                {{perPageValue}}
-              </option>
-            </select>
-          </div>
-          <div class="form-group">
+          <div v-else class="form-group">
             <p class="form-control-static">
-              records per page
+              No rows to display
             </p>
           </div>
         </div>
@@ -536,7 +543,7 @@ export default {
       }
     },
     setAllSelected() {
-      this.allSelected = this.selectedRows.length === this.filteredData.filter(d => d.showSelect).length;
+      this.allSelected = this.selectedRows.length > 0 && this.selectedRows.length === this.filteredData.filter(d => d.showSelect).length;
     },
   },
   watch: {
