@@ -64,6 +64,20 @@
             </th>
           </tr>
         </thead>
+        <tbody v-if="data.length === 0">
+          <tr>
+            <td :colspan="columns.length + (opts.childRow ? 1 : 0)">
+              {{opts.noDataMsg}}
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-else-if="filteredData.length === 0">
+          <tr>
+            <td :colspan="columns.length + (opts.childRow ? 1 : 0)">
+              {{opts.emptyResultsMsg}}
+            </td>
+          </tr>
+        </tbody>
         <tbody v-for="(group, groupKey) in pageData" :key="groupKey">
           <tr v-if="groupKey !== 'all'">
             <th :colspan="columns.length + (opts.childRow ? 1 : 0)">
@@ -378,6 +392,16 @@ export default {
            * @type {Boolean}
            */
           editable: false,
+          /**
+           * Message to show when there is no data
+           * @type {String}
+           */
+          noDataMsg: 'No data to show',
+          /**
+           * Message to show when no results are found for the search
+           * @type {String}
+           */
+          emptyResultsMsg: 'No results for this filter',
         };
       },
     },
