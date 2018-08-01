@@ -356,9 +356,9 @@ export default {
            * empty object to disable sorting for all, or define what columns are sortable; defaults to all sortable
            *
            * @default
-           * @type {false|Object}
+           * @type {true|Object}
            */
-          sortable: false,
+          sortable: true,
           /**
            * false, to disable pagination - show all; defaults to true
            *
@@ -432,8 +432,8 @@ export default {
       );
       const sortable = {};
       this.columns.forEach((key) => {
-        if (opts.sortable === false || opts.sortable[key]) {
-          sortable[key] = true;
+        if (opts.sortable === true || opts.sortable[key]) {
+          sortable[key] = opts.sortable[key] || true;
         }
       });
       return Object.assign(
@@ -496,12 +496,12 @@ export default {
       const { sortKey } = this;
       let data = this.filteredData;
       const order = this.sortOrders[sortKey] || 1;
-      if (sortKey) {
-        data = data.slice().sort((a, b) => {
-          const aF = a[sortKey];
-          const bF = b[sortKey];
-          return (aF === bF ? 0 : aF > bF ? 1 : -1) * order;
-        });
+      if (sortKey && this.opts.sortable) {
+        data = data.slice().sort(true === this.opts.sortable[sortKey] ? (a, b) => {
+          const aF = String(a[sortKey]);
+          const bF = String(b[sortKey]);
+          return (aF.localeCompare(bF, undefined, {numeric: true, sensitivity: 'base'})) * order;
+        } : this.opts.sortable[sortKey]);
       }
       if (this.opts.pagination) {
         // slice the data if pagionation is enabled
