@@ -409,7 +409,7 @@ export default {
   data() {
     const sortOrders = {};
     this.columns.forEach((key) => {
-      sortOrders[key] = 1;
+      sortOrders[key] = -1;
     });
     return {
       allSelected: false,
