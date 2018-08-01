@@ -497,11 +497,19 @@ export default {
       let data = this.filteredData;
       const order = this.sortOrders[sortKey] || 1;
       if (sortKey && this.opts.sortable) {
-        data = data.slice().sort(true === this.opts.sortable[sortKey] ? (a, b) => {
-          const aF = String(a[sortKey]);
-          const bF = String(b[sortKey]);
-          return (aF.localeCompare(bF, undefined, {numeric: true, sensitivity: 'base'})) * order;
-        } : this.opts.sortable[sortKey]);
+        let sortableFn;
+        if (true === this.opts.sortable[sortKey]) {
+          sortableFn = (a, b) => {
+            const aF = String(a[sortKey]);
+            const bF = String(b[sortKey]);
+            return (aF.localeCompare(bF, undefined, {numeric: true, sensitivity: 'base'})) * order;
+          };
+        } else if ('function' === typeof this.opts.sortable[sortKey]) {
+          sortableFn = (a, b) => {
+            return this.opts.sortable[sortKey](a, b) * order;
+          }
+        }
+        data = data.slice().sort(sortableFn);
       }
       if (this.opts.pagination) {
         // slice the data if pagionation is enabled
