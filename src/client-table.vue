@@ -485,7 +485,7 @@ export default {
       const searchQuery = this.searchBy && this.searchBy.toLowerCase();
       if (searchQuery) {
         data = data.filter(
-          row => this.opts.search.some(
+          row => Object.keys(this.opts.search).some(
             (key) => {
               if (typeof this.opts.search[key] === 'function') {
                 return this.opts.search[key](row, key, searchQuery);
