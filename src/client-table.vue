@@ -313,7 +313,7 @@ export default {
            */
           templates: {},
           /**
-           * Key-value pairs with custom search function per column
+           * Key-value pairs with custom search function per column, or false to disable search for that column
            *
            * @type {Object}
            */
@@ -431,15 +431,20 @@ export default {
         this.options
       );
       const sortable = {};
+      const search = {};
       this.columns.forEach((key) => {
         if (opts.sortable === true || opts.sortable[key]) {
           sortable[key] = opts.sortable[key] || true;
+        }
+        if (typeof opts.search[key] === 'undefined') {
+          search[key] = true;
         }
       });
       return Object.assign(
         opts,
         {
           sortable,
+          search,
         }
       );
     },
@@ -480,9 +485,9 @@ export default {
       const searchQuery = this.searchBy && this.searchBy.toLowerCase();
       if (searchQuery) {
         data = data.filter(
-          row => Object.keys(row).some(
+          row => this.opts.search.some(
             (key) => {
-              if (this.opts.search[key]) {
+              if (typeof this.opts.search[key] === 'function') {
                 return this.opts.search[key](row, key, searchQuery);
               }
               return String(row[key]).toLowerCase().indexOf(searchQuery) > -1;
