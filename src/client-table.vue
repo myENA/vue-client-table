@@ -438,6 +438,8 @@ export default {
         }
         if (typeof opts.search[key] === 'undefined') {
           search[key] = true;
+        } else {
+          search[key] = opts.search[key];
         }
       });
       return Object.assign(
