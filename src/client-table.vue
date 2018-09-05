@@ -64,7 +64,14 @@
             </th>
           </tr>
         </thead>
-        <tbody v-if="data.length === 0">
+        <tbody v-if="loading">
+          <tr>
+            <td :colspan="columns.length + (opts.childRow ? 1 : 0)">
+              {{opts.loadingMsg}}
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-else-if="data.length === 0">
           <tr>
             <td :colspan="columns.length + (opts.childRow ? 1 : 0)">
               {{opts.noDataMsg}}
@@ -278,6 +285,14 @@ export default {
      */
     searchQuery: String,
     /**
+     * Loading indicator. If true, will display the `loadingMsg` instead of the body
+     * @type {Boolean}
+     */
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    /**
      * Options for the table
      *
      * @inner
@@ -402,6 +417,11 @@ export default {
            * @type {String}
            */
           emptyResultsMsg: 'No results for this filter',
+          /**
+           * Message to show when no results are found for the search
+           * @type {String}
+           */
+          loadingMsg: 'Loading ...',
         };
       },
     },
