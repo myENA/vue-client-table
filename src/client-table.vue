@@ -85,7 +85,7 @@
             </td>
           </tr>
         </tbody>
-        <tbody v-for="(group, groupKey) in pageData" :key="groupKey">
+        <tbody v-else v-for="(group, groupKey) in pageData" :key="groupKey">
           <tr v-if="groupKey !== 'all'">
             <th :colspan="columns.length + (opts.childRow ? 1 : 0)">
               <a href="#" @click.prevent="toggleGroup(groupKey)">
