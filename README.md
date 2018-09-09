@@ -5,6 +5,8 @@ Entire table data should be given to the table and will be paginated client side
 
 ## Install
 
+`npm i vue-client-table`
+OR
 `npm i ssh://git@github.com:myENA/vue-client-table.git`
 
 ## Usage:
@@ -242,5 +244,5 @@ const MyView = new Vue({
 });
 ```
 
-### Thanks
+## Thanks
 To https://github.com/matfish2/vue-tables-2 for inspiration
