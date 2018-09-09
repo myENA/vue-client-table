@@ -3,6 +3,16 @@
 Vue component for rendering a client side table with pagination, grouping, sorting, filtering, details row.
 Entire table data should be given to the table and will be paginated client side. Data can come from a Vuex store.
 
+## Dependencies
+
+- Vue 2
+- Bootstrap 3
+- FontAwesome 4
+
+## Demo
+
+https://vueclienttable.firebaseapp.com/#/
+
 ## Install
 
 `npm i vue-client-table`
