@@ -46,6 +46,6 @@
   "peerDependencies": {
     "bootstrap": "3.x",
     "font-awesome": "4.x",
-    "vue": "2.x",
+    "vue": "2.x"
   }
 }
