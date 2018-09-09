@@ -16,15 +16,10 @@ var config = {
     rules: [{
       test: /\.vue$/,
       use: 'vue-loader'
-    },{
+    }, {
       test: /\.js$/,
       use: 'babel-loader',
       exclude: /(node_modules)/,
-    }, {
-      test: /\.jst$/,
-      use: {
-        loader: 'underscore-template-loader'
-      }
     }, {
       test: /\.(png|jpg|gif|ico)$/,
       use: [{
