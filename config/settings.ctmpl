@@ -1,3 +1,0 @@
-/* Settings for libname */
-APPSettings = APPSettings || {};
-APPSettings.keyName = '{{keyOrDefault "apps/ui/keyName" "default"}}';
