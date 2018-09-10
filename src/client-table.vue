@@ -51,9 +51,9 @@
               </slot>
               <i v-if="opts.sortable[key]" class="fa"
                 :class="{
-                  'fa-sort': sortKey !== key,
-                  'fa-sort-asc': sortKey === key && sortOrders[key] > 0,
-                  'fa-sort-desc': sortKey === key && sortOrders[key] < 0,
+                  'fa-sort': sortKey !== key || sortOrders[key] === null,
+                  'fa-sort-asc': sortKey === key && sortOrders[key] === 'ascending',
+                  'fa-sort-desc': sortKey === key && sortOrders[key] === 'descending',
                 }">
               </i>
             </th>
@@ -429,7 +429,7 @@ export default {
   data() {
     const sortOrders = {};
     this.columns.forEach((key) => {
-      sortOrders[key] = -1;
+      sortOrders[key] = null;
     });
     return {
       allSelected: false,
@@ -522,8 +522,8 @@ export default {
     pageData() {
       const { sortKey } = this;
       let data = this.filteredData;
-      const order = this.sortOrders[sortKey] || 1;
-      if (sortKey && this.opts.sortable) {
+      const order = this.sortOrders[sortKey] !== null ? this.sortOrders[sortKey] === 'ascending' ? 1: -1 : 0;
+      if (sortKey && this.opts.sortable && order) {
         let sortableFn;
         if (true === this.opts.sortable[sortKey]) {
           sortableFn = (a, b) => {
@@ -567,7 +567,14 @@ export default {
     sortBy(key) {
       if (this.opts.sortable[key]) {
         this.sortKey = key;
-        this.sortOrders[key] = this.sortOrders[key] * -1;
+        this.columns.forEach((elem) => {
+          if (elem !== this.sortKey) {
+            this.sortOrders[elem] = null;
+          }
+        });
+
+        this.sortOrders[key] = this.sortOrders[key] === null ? 'ascending': this.sortOrders[key] === 'ascending' ?
+          'descending': null;
       }
     },
     isShown(key) {
