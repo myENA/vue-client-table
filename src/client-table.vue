@@ -654,6 +654,12 @@ export default {
       });
       this.$emit('selectedRows', selectedData);
     },
+    totalPages() {
+      if (this.currentPage > this.totalPages) {
+        // set the current page to the last page if the number of pages has been reduced below it
+        this.currentPage = this.totalPages;
+      }
+    },
   },
 };
 </script>
