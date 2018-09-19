@@ -658,6 +658,9 @@ export default {
       if (this.currentPage > this.totalPages) {
         // set the current page to the last page if the number of pages has been reduced below it
         this.currentPage = this.totalPages;
+      } else if (!this.currentPage && this.totalPages) {
+        // if there was no current page and then the number of pages was set, go to first page
+        this.currentPage = 1;
       }
     },
   },
