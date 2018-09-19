@@ -422,6 +422,14 @@ export default {
            * @type {String}
            */
           loadingMsg: 'Loading ...',
+          /**
+           * The collator used for sorting
+           * @type {Intl.Collator}
+           */
+          sortCollator: new Intl.Collator('en', {
+            numeric: true,
+            sensitivity: 'base'
+          }),
         };
       },
     },
@@ -529,7 +537,7 @@ export default {
           sortableFn = (a, b) => {
             const aF = String(a[sortKey]);
             const bF = String(b[sortKey]);
-            return (aF.localeCompare(bF, undefined, {numeric: true, sensitivity: 'base'})) * order;
+            return this.opts.sortCollator.compare(aF, bF) * order;
           };
         } else if ('function' === typeof this.opts.sortable[sortKey]) {
           sortableFn = (a, b) => {
