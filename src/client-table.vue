@@ -125,7 +125,8 @@
               </td>
             </tr>
             <tr
-              v-show="opts.childRow && isShown(groupKey) && isRowExpanded(entry[opts.uniqueKey])"
+              v-if="opts.childRow && isShown(groupKey)"
+              v-show="isRowExpanded(entry[opts.uniqueKey])"
               :key="'child_row_'+entry[opts.uniqueKey]"
               :data-child="entry[opts.uniqueKey]"
               >
