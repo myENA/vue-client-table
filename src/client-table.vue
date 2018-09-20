@@ -121,7 +121,13 @@
                 </slot>
               </td>
               <td v-if="opts.childRow">
-                <a href="#" @click.prevent="toggleRow(entry[opts.uniqueKey])">{{isRowExpanded(entry[opts.uniqueKey]) ? 'Hide details' : 'Show details'}}</a>
+                <slot name="column_actions_pre" v-bind:row="entry"></slot>
+                <slot name="column_actions" v-bind:row="entry">
+                  <a href="#" @click.prevent="toggleRow(entry[opts.uniqueKey])"
+                    v-html="getToggleText(entry)">
+                  </a>
+                </slot>
+                <slot name="column_actions_post" v-bind:row="entry"></slot>
               </td>
             </tr>
             <tr
@@ -368,6 +374,16 @@ export default {
            * @type {Boolean}
            */
           childRow: false,
+          /**
+           * Text to show when row can be expanded
+           * @type {String}
+           */
+          expandText: 'Show details',
+          /**
+           * Text to show when row can be collapsed
+           * @type {String}
+           */
+          collapseText: 'Hide details',
           /**
            * empty object to disable sorting for all, or define what columns are sortable; defaults to all sortable
            *
@@ -619,6 +635,9 @@ export default {
     },
     setAllSelected() {
       this.allSelected = this.selectedRows.length > 0 && this.selectedRows.length === this.filteredData.filter(d => d.showSelect).length;
+    },
+    getToggleText(entry) {
+      return this.isRowExpanded(entry[this.opts.uniqueKey]) ? this.opts.collapseText : this.opts.expandText;
     },
   },
   watch: {

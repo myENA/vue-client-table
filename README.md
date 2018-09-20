@@ -144,6 +144,16 @@ const MyView = new Vue({
          */
         childRow: false,
         /**
+         * Text to show when row can be expanded
+         * @type {String}
+         */
+        expandText: 'Show details',
+        /**
+         * Text to show when row can be collapsed
+         * @type {String}
+         */
+        collapseText: 'Hide details',
+        /**
          * empty object to disable sorting for all, or define what columns are sortable; defaults to all sortable
          *
          * @default
@@ -198,6 +208,14 @@ const MyView = new Vue({
          * @type {String}
          */
         loadingMsg: 'Loading ...',
+        /**
+         * The collator used for sorting
+         * @type {Intl.Collator}
+         */
+        sortCollator: new Intl.Collator('en', {
+          numeric: true,
+          sensitivity: 'base'
+        }),
       },
     };
   },
