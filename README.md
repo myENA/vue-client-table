@@ -209,6 +209,11 @@ const MyView = new Vue({
          */
         loadingMsg: 'Loading ...',
         /**
+         * Key to the table by on first load (on created)
+         * @type {String}
+         */
+        sortBy: null,
+        /**
          * The collator used for sorting
          * @type {Intl.Collator}
          */

@@ -440,6 +440,11 @@ export default {
            */
           loadingMsg: 'Loading ...',
           /**
+           * Key to the table by on first load (on created)
+           * @type {String}
+           */
+          sortBy: null,
+          /**
            * The collator used for sorting
            * @type {Intl.Collator}
            */
@@ -598,8 +603,11 @@ export default {
           }
         });
 
-        this.sortOrders[key] = this.sortOrders[key] === null ? 'ascending': this.sortOrders[key] === 'ascending' ?
-          'descending': null;
+        this.sortOrders[key] = this.sortOrders[key] === null ?
+          'ascending' :
+          this.sortOrders[key] === 'ascending' ?
+            'descending' :
+            null;
       }
     },
     isShown(key) {
@@ -682,6 +690,11 @@ export default {
         this.currentPage = 1;
       }
     },
+  },
+  created() {
+    if (this.opts.sortBy) {
+      this.sortBy(this.opts.sortBy);
+    }
   },
 };
 </script>
