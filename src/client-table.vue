@@ -691,7 +691,7 @@ export default {
       }
     },
   },
-  created() {
+  mounted() {
     if (this.opts.sortBy) {
       this.sortBy(this.opts.sortBy);
     }
