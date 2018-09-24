@@ -1,6 +1,6 @@
 {
   "name": "vue-client-table",
-  "version": "0.3.12",
+  "version": "0.3.13",
   "description": "Description for ENA CAF Library",
   "repository": "ssh://git@github.com:myENA/vue-client-table.git",
   "main": "dist/vue-client-table.js",
