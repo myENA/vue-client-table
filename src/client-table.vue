@@ -66,22 +66,22 @@
         </thead>
         <tbody v-if="loading">
           <tr>
-            <td :colspan="columns.length + (opts.childRow ? 1 : 0)">
-              {{opts.loadingMsg}}
+            <td class="msg-row" :colspan="columns.length + (opts.childRow ? 1 : 0)">
+              <slot name="loading"><span v-html="opts.loadingMsg"></span></slot>
             </td>
           </tr>
         </tbody>
         <tbody v-else-if="data.length === 0">
           <tr>
-            <td :colspan="columns.length + (opts.childRow ? 1 : 0)">
-              {{opts.noDataMsg}}
+            <td class="msg-row" :colspan="columns.length + (opts.childRow ? 1 : 0)">
+              <slot name="no_data"><span v-html="opts.noDataMsg"></span></slot>
             </td>
           </tr>
         </tbody>
         <tbody v-else-if="filteredData.length === 0">
           <tr>
-            <td :colspan="columns.length + (opts.childRow ? 1 : 0)">
-              {{opts.emptyResultsMsg}}
+            <td class="msg-row" :colspan="columns.length + (opts.childRow ? 1 : 0)">
+              <slot name="empty_results"><span v-html="opts.emptyResultsMsg"></span></slot>
             </td>
           </tr>
         </tbody>
