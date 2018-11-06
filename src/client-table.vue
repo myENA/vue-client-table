@@ -31,7 +31,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th v-for="key in columns" :key="key" @click="sortBy(key)"
+            <th v-for="key in columns" :key="key" @click="sortBy({key})"
               :class="{ sortable: opts.sortable[key], sorted: sortKey === key }">
               <slot :name="'heading_' + key">
                 <template v-if="key === 'select'">
@@ -440,10 +440,13 @@ export default {
            */
           loadingMsg: 'Loading ...',
           /**
-           * Key to the table by on first load (on created)
-           * @type {String}
+           * Object (key, order) to sort table by on first load (on created)
+           * @type {Object}
            */
-          sortBy: null,
+          sortBy: {
+            column: null,
+            order: null,
+          },
           /**
            * The collator used for sorting
            * @type {Intl.Collator}
@@ -594,7 +597,8 @@ export default {
     search(value) {
       this.searchBy = value;
     },
-    sortBy(key) {
+    sortBy(obj) {
+      const { key, order } = obj;
       if (this.opts.sortable[key]) {
         this.sortKey = key;
         this.columns.forEach((elem) => {
@@ -603,11 +607,15 @@ export default {
           }
         });
 
-        this.sortOrders[key] = this.sortOrders[key] === null ?
-          'ascending' :
-          this.sortOrders[key] === 'ascending' ?
-            'descending' :
-            null;
+        if (order) {
+          this.sortOrders[key] = order;
+        } else {
+          this.sortOrders[key] = this.sortOrders[key] === null ?
+            'ascending' :
+            this.sortOrders[key] === 'ascending' ?
+              'descending' :
+              null;
+        }
       }
     },
     isShown(key) {
