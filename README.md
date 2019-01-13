@@ -1,3 +1,7 @@
+# !! Warning !!
+This repository has been deprecated in favor of https://github.com/myENA/vue-table which has more features, including a separate ServerTable that supports loading remote data
+
+
 # Vue Client Table
 
 Vue component for rendering a client side table with pagination, grouping, sorting, filtering, details row.
